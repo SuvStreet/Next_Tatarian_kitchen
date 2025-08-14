@@ -11,6 +11,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { siteConfig } from '@/config/site.config'
+import { layoutConfig } from '@/config/layout.config'
 
 export const Logo = () => {
   return (
@@ -54,7 +55,7 @@ export default function Header() {
   }
 
   return (
-    <Navbar>
+    <Navbar className={`h-[${layoutConfig.headerHeight}]`}>
       <NavbarBrand>
         <Link rel="icon" href="/" className="flex gap-1 items-center">
           <Logo />
