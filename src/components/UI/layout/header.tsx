@@ -15,6 +15,8 @@ import { layoutConfig } from '@/config/layout.config'
 import RegistrationModal from '../modals/registration.modal'
 import { useState } from 'react'
 import LoginModal from '../modals/login.modal'
+import { signOutFunc } from '@/actions/sing-out'
+import { useSession } from 'next-auth/react'
 
 export const Logo = () => {
   return (
@@ -30,9 +32,19 @@ export const Logo = () => {
 
 export default function Header() {
   const pathName = usePathname()
+  const { data: session, status } = useSession()
+
+  const isAuth = status === 'authenticated'
+
+  console.log('session :>> ', session)
+  console.log('status :>> ', status)
 
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
+
+  const handelSingOut = async () => {
+    await signOutFunc()
+  }
 
   const getNavItems = () => {
     return siteConfig.navItems.map((item) => {
@@ -74,29 +86,46 @@ export default function Header() {
       </NavbarContent>
 
       <NavbarContent justify="end">
-        <NavbarItem className="lg:flex">
-          <Button
-            as={Link}
-            color="secondary"
-            href="#"
-            variant="flat"
-            onPress={() => setIsLoginOpen(true)}
-          >
-            Войти
-          </Button>
-        </NavbarItem>
+        {isAuth && <p>Привет, {session?.user?.email}!</p>}
 
-        <NavbarItem>
-          <Button
-            as={Link}
-            color="primary"
-            href="#"
-            variant="flat"
-            onPress={() => setIsRegistrationOpen(true)}
-          >
-            Регистрация
-          </Button>
-        </NavbarItem>
+        {!isAuth ? (
+          <>
+            <NavbarItem className="hidden lg:flex">
+              <Button
+                as={Link}
+                color="secondary"
+                href="#"
+                variant="flat"
+                onPress={() => setIsLoginOpen(true)}
+              >
+                Войти
+              </Button>
+            </NavbarItem>
+            <NavbarItem>
+              <Button
+                as={Link}
+                color="primary"
+                href="#"
+                variant="flat"
+                onPress={() => setIsRegistrationOpen(true)}
+              >
+                Регистрация
+              </Button>
+            </NavbarItem>
+          </>
+        ) : (
+          <NavbarItem className="hidden lg:flex">
+            <Button
+              as={Link}
+              color="secondary"
+              href="#"
+              variant="flat"
+              onPress={handelSingOut}
+            >
+              Выйти
+            </Button>
+          </NavbarItem>
+        )}
       </NavbarContent>
 
       <RegistrationModal
