@@ -20,7 +20,6 @@ export const Logo = () => {
       width={26}
       height={26}
       priority
-      className="mr-2"
     />
   )
 }
