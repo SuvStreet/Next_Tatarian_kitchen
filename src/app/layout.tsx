@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import Header from '@/components/UI/header'
 import { Providers } from '@/providers/hero-ui-provider'
+import { siteConfig } from '@/config/site.config'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Татарская кухня',
-  description: 'Рецепты татарской кухни',
+  title: siteConfig.title,
+  description: siteConfig.description,
 }
 
 export default function RootLayout({
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="ru">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
