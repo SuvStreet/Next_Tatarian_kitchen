@@ -2,6 +2,7 @@
 
 import { registerUser } from '@/actions/register'
 import { Button, Form, Input } from '@heroui/react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
 type IProps = {
@@ -9,6 +10,8 @@ type IProps = {
 }
 
 const RegistrationForm = ({ onClose }: IProps) => {
+  const { update } = useSession()
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,9 +25,12 @@ const RegistrationForm = ({ onClose }: IProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
     console.log('Форма отправлена', formData)
 
     const result = await registerUser(formData)
+
+    await update()
 
     console.log('result :>> ', result)
 

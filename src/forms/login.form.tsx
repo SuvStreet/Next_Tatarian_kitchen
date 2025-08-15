@@ -2,6 +2,7 @@
 
 import { signInWithCredentials } from '@/actions/sing-in'
 import { Button, Form, Input } from '@heroui/react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
 type IProps = {
@@ -9,19 +10,19 @@ type IProps = {
 }
 
 const LoginForm = ({ onClose }: IProps) => {
+  const { update } = useSession()
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: '',
   })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log('Форма отправлена', formData)
 
-    const result = await signInWithCredentials(formData.email, formData.password)
+    await signInWithCredentials(formData.email, formData.password)
 
-    console.log('result :>> ', result)
+    await update()
 
     onClose()
   }

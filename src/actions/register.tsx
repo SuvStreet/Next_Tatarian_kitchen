@@ -3,6 +3,7 @@
 import { IFormData } from '@/types/form-data'
 import { saltAndHashPassword } from '@/utils/password'
 import prisma from '@/utils/prisma'
+import { signIn } from '@/auth/auth'
 
 export async function registerUser(formData: IFormData) {
   const { email, password, confirmPassword } = formData
@@ -11,7 +12,7 @@ export async function registerUser(formData: IFormData) {
     return { error: 'Пароли не совпадают' }
   }
 
-  if(password.length < 6) {
+  if (password.length < 6) {
     return { error: 'Пароль должен быть не менее 6 символов' }
   }
 
@@ -31,7 +32,16 @@ export async function registerUser(formData: IFormData) {
       },
     })
 
-    return user
+    await signIn('credentials', { email, password, redirect: false })
+
+    return {
+      user: {
+        email: user.email,
+        id: user.id,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+    }
   } catch (error) {
     console.error('Ошибка регистрации:', error)
     return { error: 'Ошибка при регистрации' }

@@ -16,7 +16,7 @@ import RegistrationModal from '../modals/registration.modal'
 import { useState } from 'react'
 import LoginModal from '../modals/login.modal'
 import { signOutFunc } from '@/actions/sing-out'
-import { useSession } from 'next-auth/react'
+import { useAuthStore } from '@/store/auth.store'
 
 export const Logo = () => {
   return (
@@ -32,18 +32,20 @@ export const Logo = () => {
 
 export default function Header() {
   const pathName = usePathname()
-  const { data: session, status } = useSession()
 
-  const isAuth = status === 'authenticated'
-
-  console.log('session :>> ', session)
-  console.log('status :>> ', status)
+  const { isAuth, session, status, setAuthState } = useAuthStore()
 
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
 
   const handelSingOut = async () => {
-    await signOutFunc()
+    try {
+      await signOutFunc()
+    } catch (error) {
+      console.error('Error', error)
+    }
+
+    setAuthState('unauthenticated', null)
   }
 
   const getNavItems = () => {
@@ -85,12 +87,13 @@ export default function Header() {
         {getNavItems()}
       </NavbarContent>
 
-      <NavbarContent justify="end">
+
+        <NavbarContent justify="end">
         {isAuth && <p>Привет, {session?.user?.email}!</p>}
 
-        {!isAuth ? (
+        {status === 'loading' ? <p>Загрузка...</p> : !isAuth ? (
           <>
-            <NavbarItem className="hidden lg:flex">
+            <NavbarItem className="lg:flex">
               <Button
                 as={Link}
                 color="secondary"
@@ -114,7 +117,7 @@ export default function Header() {
             </NavbarItem>
           </>
         ) : (
-          <NavbarItem className="hidden lg:flex">
+          <NavbarItem className="lg:flex">
             <Button
               as={Link}
               color="secondary"
