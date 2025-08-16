@@ -1,5 +1,7 @@
+import IngredientForm from "@/forms/ingredien.form"
+
 const IngredientsPage = () => {
-  return <div>Ингридиенты</div>
+  return <IngredientForm />
 }
 
 export default IngredientsPage
