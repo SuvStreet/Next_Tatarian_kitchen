@@ -10,7 +10,7 @@ export const siteConfig = {
 
   navItems: [
     { href: '/', label: 'Рецепты' },
-    { href: '/ingredients', label: 'Ингридиенты' },
+    { href: '/ingredients', label: 'Ингредиенты' },
     { href: '/about', label: 'О нас' },
   ],
 
