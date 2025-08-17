@@ -1,7 +1,13 @@
-import IngredientForm from "@/forms/ingredien.form"
+import IngredientsTable from '@/components/UI/tables/ingredients'
+import IngredientForm from '@/forms/ingredien.form'
 
 const IngredientsPage = () => {
-  return <IngredientForm />
+  return (
+    <div>
+      <IngredientForm />
+      <IngredientsTable />
+    </div>
+  )
 }
 
 export default IngredientsPage

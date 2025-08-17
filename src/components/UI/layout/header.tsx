@@ -49,15 +49,20 @@ export default function Header() {
   }
 
   const getNavItems = () => {
-    return siteConfig.navItems.map((item) => {
-      const isActive = pathName === item.href
+    return siteConfig.navItems
+      .filter((item) => {
+        if (item.href === '/ingredients') return isAuth
+        return true
+      })
+      .map((item) => {
+        const isActive = pathName === item.href
 
-      return (
-        <NavbarItem key={item.href}>
-          <Link
-            color="foreground"
-            href={item.href}
-            className={`
+        return (
+          <NavbarItem key={item.href}>
+            <Link
+              color="foreground"
+              href={item.href}
+              className={`
                   px-3 py-1 
                   ${isActive ? 'text-blue-500' : 'text-foreground'} 
                 hover:text-blue-300 hover:border
@@ -66,12 +71,12 @@ export default function Header() {
                   transition-border
                   duration-200
                 `}
-          >
-            {item.label}
-          </Link>
-        </NavbarItem>
-      )
-    })
+            >
+              {item.label}
+            </Link>
+          </NavbarItem>
+        )
+      })
   }
 
   return (
@@ -87,11 +92,12 @@ export default function Header() {
         {getNavItems()}
       </NavbarContent>
 
-
-        <NavbarContent justify="end">
+      <NavbarContent justify="end">
         {isAuth && <p>Привет, {session?.user?.email}!</p>}
 
-        {status === 'loading' ? <p>Загрузка...</p> : !isAuth ? (
+        {status === 'loading' ? (
+          <p>Загрузка...</p>
+        ) : !isAuth ? (
           <>
             <NavbarItem className="lg:flex">
               <Button
