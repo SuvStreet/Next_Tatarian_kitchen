@@ -1,5 +1,5 @@
 import IngredientsTable from '@/components/UI/tables/ingredients'
-import IngredientForm from '@/forms/ingredien.form'
+import IngredientForm from '@/forms/ingredient.form'
 
 const IngredientsPage = () => {
   return (
