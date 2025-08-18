@@ -77,10 +77,11 @@ const RecipeCard = ({ recipe }: RecipeCardProps) => {
 
       {isAuth && (
         <div className="flex justify-end gap-2 p-4 pt-0">
-          <Link href={`/recipes/${recipe.id}`}>
-            <Button color="primary" variant="light">
+          <Link href={`/recipes/${recipe.id}`} className='px-3 py-2 rounded-xl text-primary hover:bg-primary/20 transition-colors'>
+            {/* <Button color="primary" variant="light">
               Редактировать
-            </Button>
+            </Button> */}
+            Редактировать
           </Link>
           <Button
             color="danger"

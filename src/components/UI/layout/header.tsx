@@ -17,6 +17,7 @@ import { useState } from 'react'
 import LoginModal from '../modals/login.modal'
 import { signOutFunc } from '@/actions/sing-out'
 import { useAuthStore } from '@/store/auth.store'
+import { signOut } from 'next-auth/react'
 
 export const Logo = () => {
   return (
@@ -33,7 +34,7 @@ export const Logo = () => {
 export default function Header() {
   const pathName = usePathname()
 
-  const { isAuth, session, status, setAuthState } = useAuthStore()
+  const { isAuth, session, status } = useAuthStore()
 
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
@@ -41,11 +42,12 @@ export default function Header() {
   const handelSingOut = async () => {
     try {
       await signOutFunc()
+      signOut({ callbackUrl: '/' })
     } catch (error) {
       console.error('Error', error)
     }
-
-    setAuthState('unauthenticated', null)
+    
+    // setAuthState('unauthenticated', null)
   }
 
   const getNavItems = () => {
@@ -63,10 +65,16 @@ export default function Header() {
               color="foreground"
               href={item.href}
               className={`
-                  px-3 py-1 
+                  px-3
+                  py-1
+                  border
+                  border-transparent
+                  rounded-md
                   ${isActive ? 'text-blue-500' : 'text-foreground'} 
-                hover:text-blue-300 hover:border
-                hover:border-blue-300 hover:rounded-md
+                hover:text-blue-300
+                  hover:border
+                hover:border-blue-300
+                  hover:rounded-md
                   transition-colors
                   transition-border
                   duration-200

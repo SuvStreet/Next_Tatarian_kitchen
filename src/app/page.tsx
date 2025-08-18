@@ -3,7 +3,6 @@
 import RecipeCard from '@/components/common/recipe-card'
 import { useAuthStore } from '@/store/auth.store'
 import { useRecipeStore } from '@/store/recipe.store'
-import { Button } from '@heroui/react'
 import Link from 'next/link'
 
 const Home = () => {
@@ -14,8 +13,11 @@ const Home = () => {
     <>
       {isAuth && (
         <div className="flex w-full justify-center items-center mb-4">
-          <Link href="/recipes/new">
-            <Button color="primary"> Добавить рецепт</Button>
+          <Link
+            href="/recipes/new"
+            className="px-4 py-2 bg-primary text-white rounded-xl"
+          >
+            Добавить рецепт
           </Link>
         </div>
       )}
