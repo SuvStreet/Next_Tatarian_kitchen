@@ -1,6 +1,7 @@
 generator client {
-  provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  provider        = "prisma-client-js"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["driverAdapters"]
 }
 
 datasource db {
@@ -108,7 +109,7 @@ model RecipeIngredient {
   recipeId     String
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
   ingredientId String
-  quantity      Float
+  quantity     Float
 
   @@map("recipe_ingredient")
 }
