@@ -13,11 +13,11 @@ import { usePathname } from 'next/navigation'
 import { siteConfig } from '@/config/site.config'
 import { layoutConfig } from '@/config/layout.config'
 import RegistrationModal from '../modals/registration.modal'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import LoginModal from '../modals/login.modal'
 import { signOutFunc } from '@/actions/sing-out'
 import { useAuthStore } from '@/store/auth.store'
-import { signOut } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 export const Logo = () => {
   return (
@@ -33,21 +33,24 @@ export const Logo = () => {
 
 export default function Header() {
   const pathName = usePathname()
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
 
-  const { isAuth, session, status } = useAuthStore()
+  const { isAuth, session, status, setAuthState } = useAuthStore()
 
   const [isRegistrationOpen, setIsRegistrationOpen] = useState(false)
   const [isLoginOpen, setIsLoginOpen] = useState(false)
 
   const handelSingOut = async () => {
-    try {
-      await signOutFunc()
-      signOut({ callbackUrl: '/' })
-    } catch (error) {
-      console.error('Error', error)
-    }
-    
-    // setAuthState('unauthenticated', null)
+    startTransition(async () => {
+      try {
+        await signOutFunc()
+        setAuthState('unauthenticated', null)
+        router.push('/')
+      } catch (error) {
+        console.error('Error', error)
+      }
+    })
   }
 
   const getNavItems = () => {
@@ -138,6 +141,8 @@ export default function Header() {
               href="#"
               variant="flat"
               onPress={handelSingOut}
+              isLoading={isPending}
+              disabled={isPending}
             >
               Выйти
             </Button>

@@ -3,7 +3,7 @@
 import { signInWithCredentials } from '@/actions/sing-in'
 import { Button, Form, Input } from '@heroui/react'
 import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 
 type IProps = {
   onClose: () => void
@@ -11,6 +11,7 @@ type IProps = {
 
 const LoginForm = ({ onClose }: IProps) => {
   const { update } = useSession()
+  const [isPending, startTransition] = useTransition()
 
   const [formData, setFormData] = useState({
     email: '',
@@ -18,13 +19,15 @@ const LoginForm = ({ onClose }: IProps) => {
   })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    startTransition(async () => {
+      e.preventDefault()
 
-    await signInWithCredentials(formData.email, formData.password)
+      await signInWithCredentials(formData.email, formData.password)
 
-    await update()
+      await update()
 
-    onClose()
+      onClose()
+    })
   }
 
   return (
@@ -66,10 +69,10 @@ const LoginForm = ({ onClose }: IProps) => {
       />
 
       <div className="flex w-[100%]  gap-4 items-center pt-8 justify-end">
-        <Button variant="light" onPress={onClose}>
+        <Button variant="light" onPress={onClose} disabled={isPending}>
           Отмена
         </Button>
-        <Button color="primary" type="submit">
+        <Button color="primary" type="submit" disabled={isPending} isLoading={isPending}>
           Войти
         </Button>
       </div>

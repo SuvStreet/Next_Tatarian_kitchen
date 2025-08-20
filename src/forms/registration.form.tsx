@@ -3,7 +3,7 @@
 import { registerUser } from '@/actions/register'
 import { Button, Form, Input } from '@heroui/react'
 import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 
 type IProps = {
   onClose: () => void
@@ -11,6 +11,7 @@ type IProps = {
 
 const RegistrationForm = ({ onClose }: IProps) => {
   const { update } = useSession()
+  const [isPending, startTransition] = useTransition()
 
   const [formData, setFormData] = useState({
     email: '',
@@ -24,17 +25,15 @@ const RegistrationForm = ({ onClose }: IProps) => {
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    startTransition(async () => {
+      e.preventDefault()
 
-    console.log('Форма отправлена', formData)
+      await registerUser(formData)
 
-    const result = await registerUser(formData)
+      await update()
 
-    await update()
-
-    console.log('result :>> ', result)
-
-    onClose()
+      onClose()
+    })
   }
 
   return (
@@ -97,10 +96,10 @@ const RegistrationForm = ({ onClose }: IProps) => {
       />
 
       <div className="flex w-[100%]  gap-4 items-center pt-8 justify-end">
-        <Button variant="light" onPress={onClose}>
+        <Button variant="light" onPress={onClose} disabled={isPending}>
           Отмена
         </Button>
-        <Button color="primary" type="submit">
+        <Button color="primary" type="submit" isLoading={isPending} disabled={isPending}>
           Зарегистрироваться
         </Button>
       </div>
